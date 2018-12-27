@@ -12,6 +12,10 @@
 ;;;
 ;;; Assumes all libraries needed by the program have been pre-compiled,
 ;;; don't need to be compiled, or are contained within the program file.
+;;; This also assumes that larceny is on your PATH and that the command to run
+;;; it is simply "larceny".
+;;;
+;;; For windows sytems only.
 
 (define compile-r7rs
   (case-lambda
@@ -99,6 +103,7 @@
           (suffix (file-basename pgm))
           (else "a.out"))))
 
+;;; Write the batch file and sed file, then run iexpress and cleanup
 (define (write-outfile outfile pgmfile dirs dirs2 features)
   (if outfile
       (let ((batfile (write-outfile-batch outfile pgmfile dirs dirs2 features)))
@@ -108,6 +113,7 @@
 					(delete-file sedfile)
 					(delete-file pgmfile)))))
 
+;;; Write the batch file that runs the program
 (define (write-outfile-batch outfile pgmfile dirs dirs2 features)
 	(let ((batfile (string-append outfile ".bat")))
 		(delete-file batfile)
@@ -136,7 +142,7 @@
 				(display "pause > nul" p)))
 		batfile))
 
-;; Write the sed file so iexpress.exe can do it's magic
+;;; Write the sed file so iexpress.exe can do it's magic
 (define (write-sed-file outfile pgmfile)
 	(let ((exefile (string-append outfile ".exe"))
 				(sedfile (string-append outfile ".sed"))
