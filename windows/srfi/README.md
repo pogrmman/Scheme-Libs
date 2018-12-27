@@ -25,4 +25,9 @@ to run the file, this version creates a shell script. The biggest
 difference is that it packages the shell script along with the
 compiled file, so that you don't have to deal with a seperate 
 compiled version of your code. These executables should be somewhat
-portable, as long as the `larceny` command exists on the system in question.
+portable, as long as the `larceny` command and all libraries used by
+the program exist on the system in question.
+
+## Future
+- Package compiled libraries along with main program
+- Add a switch to allow making a fully portable version?
