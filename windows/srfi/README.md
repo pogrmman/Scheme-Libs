@@ -5,7 +5,12 @@ run the program along with a compiled version of the program.
 
 ## Usage
 The `compile-r7rs` procedure is used just as it is when compiling 
-files for POSIX systems.
+files for POSIX systems. There's only one important difference:
+the executable name provided *should not have an extension*. 
+`compile-r7rs` knows to append `.exe` to the output filename, and
+it also uses the provided filename as a title for the cmd instance
+used to run larceny. So don't provide an extension if you specify 
+the executable name.
 
 ## Notes
 This library currently requires that the script to start larceny 
