@@ -3,18 +3,15 @@
 ;;; a list of directories to be searched before the standard directories,
 ;;; a list of directories to be searched after the standard directories,
 ;;; and a list of feature identifiers to be recognized by cond-expand,
-;;; compiles the program and produces an executable file that will run
-;;; the program.
+;;; compiles the program and produces a self-extracting executable to run it.
 ;;;
 ;;; The first argument is required.  All others are optional.
 ;;;
 ;;; The outfile may be #f, in which case a default outfile is constructed
-;;; from the name of the pgm or, as a last resort, assumed to be a.out
+;;; from the name of the program. 
 ;;;
 ;;; Assumes all libraries needed by the program have been pre-compiled,
 ;;; don't need to be compiled, or are contained within the program file.
-;;;
-;;; Works only for Windows systems
 
 (define compile-r7rs
   (case-lambda
@@ -129,12 +126,14 @@
 				(display "title " p)
 				(display outfile p)
 				(newline p)
-				(display "larceny --r7rs " p)
+				(display "call larceny --r7rs " p)
 				(write-opts "-I" dirs)
 				(write-opts "-A" dirs2)
 				(write-opts "-D" features)
 				(display "--program " p)
-				(display pgmfile p)))
+				(display pgmfile p)
+				(newline p)
+				(display "pause > nul" p)))
 		batfile))
 
 ;; Write the sed file so iexpress.exe can do it's magic
