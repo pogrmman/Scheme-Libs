@@ -1,5 +1,5 @@
-# Windows SRFI 138
-This library provides SRFI 138 for larceny on Windows. 
+# Windows SRFI 138 for Larceny Scheme
+This library provides SRFI 138 for Larceny on Windows. 
 It builds a self-extracting .exe file that contains a batch file to 
 run the program along with a compiled version of the program.
 
