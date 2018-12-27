@@ -23,12 +23,11 @@
 
 (define-library (windows srfi 138)
 
-  (export compile-r7rs read-template)
+  (export compile-r7rs)
 
   (import (scheme base)
           (scheme case-lambda)
           (scheme write)
-					(scheme read)
           (scheme file)
           (scheme list)
           (scheme text)
@@ -36,5 +35,6 @@
           (larceny compiler)
           (primitives system))
 
-  (include "138.body.scm"))
-
+	(include "138.body.scm")
+	(include "138.body.sed_start.scm")
+	(include "138.body.sed_end.scm"))

@@ -104,15 +104,18 @@
 
 (define (write-outfile outfile pgmfile dirs dirs2 features)
   (if outfile
-      (begin
-				(write-outfile-batch outfile pgmfile dirs dirs2 features)
-				(write-sed-file outfile pgmfile))))
+      (let ((batfile (write-outfile-batch outfile pgmfile dirs dirs2 features)))
+				(let ((sedfile (write-sed-file outfile pgmfile)))
+					(system (string-append "iexpress /N " sedfile))
+					(delete-file batfile)
+					(delete-file sedfile)
+					(delete-file pgmfile)))))
 
 (define (write-outfile-batch outfile pgmfile dirs dirs2 features)
-	(let ((ofile (string-append outfile ".bat")))
-		(delete-file ofile)
+	(let ((batfile (string-append outfile ".bat")))
+		(delete-file batfile)
 		(call-with-output-file
-				ofile
+				batfile
 			(lambda (p)
 				(define (write-opts opt things)
 					(for-each (lambda (thing)
@@ -131,20 +134,10 @@
 				(write-opts "-A" dirs2)
 				(write-opts "-D" features)
 				(display "--program " p)
-				(display pgmfile p)))))
+				(display pgmfile p)))
+		batfile))
 
-;; Grab the start of the sed file
-(define (read-template template)
-	(begin
-		(let ((file (open-input-file template)))
-			(let kernel ((contents '())
-									 (obj (read-char file)))
-				(if (eof-object? obj)
-						(begin
-							(close-input-port file)
-							(list->string (reverse contents)))
-						(kernel (cons obj contents) (read-char file)))))))
-
+;; Write the sed file so iexpress.exe can do it's magic
 (define (write-sed-file outfile pgmfile)
 	(let ((exefile (string-append outfile ".exe"))
 				(sedfile (string-append outfile ".sed"))
@@ -153,8 +146,7 @@
 		(call-with-output-file
 				sedfile
 			(lambda (p)
-				(let ((start (read-template "sed_start.sed")))
-					(display start p))
+				(display sed-start-lines p)
 				(newline p)
 				(display "TargetName=" p)
 				(display exefile p)
@@ -167,9 +159,9 @@
 				(newline p)
 				(display "PostInstallCmd=<None>" p)
 				(newline p)
-				(display "AdminQuietInstallCmd=" p)
+				(display "AdminQuietInstCmd=" p)
 				(newline p)
-				(display "UserQuietInstallCmd=" p)
+				(display "UserQuietInstCmd=" p)
 				(newline p)
 				(display "FILE0=\"" p)
 				(display batfile p)
@@ -179,5 +171,5 @@
 				(display pgmfile p)
 				(display "\"" p)
 				(newline p)
-				(let ((end (read-template "sed_end.sed")))
-					(display end p))))))
+				(display sed-end-lines p)))
+		sedfile))

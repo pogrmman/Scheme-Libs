@@ -1,4 +1,5 @@
-[Version]
+(define sed-start-lines
+"[Version]
 Class=IEXPRESS
 SEDVersion=3
 [Options]
@@ -23,4 +24,4 @@ SourceFiles=SourceFiles
 [Strings]
 InstallPrompt=
 DisplayLicense=
-FinishMessage=
+FinishMessage=")
