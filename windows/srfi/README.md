@@ -1,7 +1,9 @@
 # Windows SRFI 138 for Larceny Scheme
-This library provides SRFI 138 for Larceny on Windows. 
-It builds a self-extracting .exe file that contains a batch file to 
-run the program along with a compiled version of the program.
+This library provides an implementation of 
+[SRFI 138](https://srfi.schemers.org/srfi-138/)
+for Larceny on Windows. It builds a self-extracting .exe file that
+contains a batch file to run the program along with a compiled version
+of the program.
 
 ## Usage
 The `compile-r7rs` procedure is used just as it is when compiling 
