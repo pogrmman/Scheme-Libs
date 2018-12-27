@@ -23,11 +23,12 @@
 
 (define-library (windows srfi 138)
 
-  (export compile-r7rs)
+  (export compile-r7rs read-template)
 
   (import (scheme base)
           (scheme case-lambda)
           (scheme write)
+					(scheme read)
           (scheme file)
           (scheme list)
           (scheme text)

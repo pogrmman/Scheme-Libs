@@ -104,7 +104,9 @@
 
 (define (write-outfile outfile pgmfile dirs dirs2 features)
   (if outfile
-      (write-outfile-batch outfile pgmfile dirs dirs2 features)))
+      (begin
+				(write-outfile-batch outfile pgmfile dirs dirs2 features)
+				(write-sed-file outfile pgmfile))))
 
 (define (write-outfile-batch outfile pgmfile dirs dirs2 features)
 	(let ((ofile (string-append outfile ".bat")))
@@ -131,11 +133,51 @@
 				(display "--program " p)
 				(display pgmfile p)))))
 
+;; Grab the start of the sed file
+(define (read-template template)
+	(begin
+		(let ((file (open-input-file template)))
+			(let kernel ((contents '())
+									 (obj (read-char file)))
+				(if (eof-object? obj)
+						(begin
+							(close-input-port file)
+							(list->string (reverse contents)))
+						(kernel (cons obj contents) (read-char file)))))))
+
 (define (write-sed-file outfile pgmfile)
-	(let ((outfile (string-append outfile ".SED")))
+	(let ((exefile (string-append outfile ".exe"))
+				(sedfile (string-append outfile ".sed"))
+				(batfile (string-append outfile ".bat")))
 		(delete-file outfile)
 		(call-with-output-file
-				outfile
+				sedfile
 			(lambda (p)
-				(
-		 
+				(let ((start (read-template "sed_start.sed")))
+					(display start p))
+				(newline p)
+				(display "TargetName=" p)
+				(display exefile p)
+				(newline p)
+				(display "FriendlyName=" p)
+				(display outfile p)
+				(newline p)
+				(display "AppLaunched = cmd /c " p)
+				(display batfile p)
+				(newline p)
+				(display "PostInstallCmd=<None>" p)
+				(newline p)
+				(display "AdminQuietInstallCmd=" p)
+				(newline p)
+				(display "UserQuietInstallCmd=" p)
+				(newline p)
+				(display "FILE0=\"" p)
+				(display batfile p)
+				(display "\"" p)
+				(newline p)
+				(display "FILE1=\"" p)
+				(display pgmfile p)
+				(display "\"" p)
+				(newline p)
+				(let ((end (read-template "sed_end.sed")))
+					(display end p))))))
