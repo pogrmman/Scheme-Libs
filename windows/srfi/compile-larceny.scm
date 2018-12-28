@@ -29,7 +29,7 @@
            (libs `(: ,path (* (: #\; ,path))))
            (before-libs-regex (regexp `(: "-I" #\space ,libs)))
            (after-libs-regex (regexp `(: "-A" #\space ,libs))))
-      ; Look through the file contents for each regex
+      ; Look through the file contents for each regex (should I use map here?)
       (let ((input-file
              (find-in-list file-contents input-regex))
             (output-file
