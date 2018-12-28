@@ -16,17 +16,20 @@
             (kernel (cons line contents) (read-line p)))))))
 
 (define (parse-file-contents file-contents)
+  ; Build the charsets we'll use to parse the file
   (let* ((ascii-no-whitespace (char-set-intersection char-set:ascii
                                                      char-set:graphic))
          (reserved (list->char-set '(#\" #\* #\/ #\: #\< #\> #\? #\\ #\| #\;)))
          (filename-chars (char-set-difference ascii-no-whitespace reserved))
          (path-chars (char-set-adjoin filename-chars #\space)))
+    ; Set up regexes to grab the necessary information from the file
     (let* ((input-regex (regexp `(: "-pgm" #\space ($ (+ ,filename-chars) ".scm"))))
-           (output-regex (regexp `(: "-o" #\space ($ (+ ,filename-chars)) ".exe")))
+           (output-regex (regexp `(: "-o" #\space ($ (+ ,filename-chars)) (? ".exe"))))
            (path `($ (: ,char-set:letter ":\\" (* (+ ,path-chars) (? #\\)))))
            (libs `(: ,path (* (: #\; ,path))))
            (before-libs-regex (regexp `(: "-I" #\space ,libs)))
            (after-libs-regex (regexp `(: "-A" #\space ,libs))))
+      ; Look through the file contents for each regex
       (let ((input-file
              (find-in-list file-contents input-regex))
             (output-file
@@ -35,6 +38,7 @@
              (find-in-list file-contents before-libs-regex))
             (after-libs
              (find-in-list file-contents after-libs-regex)))
+        ; Basic error handling
         (cond ((null? input-file)
                (error "parse-file-contents: please specify a file to compile"))
               ((> (length input-file) 1)
@@ -43,8 +47,8 @@
                (error "parse-file-contents: please specify a single output file"))
               (else
                (compile input-file output-file before-libs after-libs)))))))
-              
 
+;; Start compilation
 (define (compile input-file output-file before-libs after-libs)
   (let ((input-file (car (matches->lists input-file)))
         (output-file (if (not (null? output-file))
@@ -56,6 +60,7 @@
                         (add-quotes (flatten (matches->lists after-libs))))))
     (compile-r7rs input-file output-file before-libs after-libs)))
 
+;; List Helper Functions
 (define (add-quotes list)
   (let kernel ((list list)
                (quoted-list '()))
@@ -87,6 +92,7 @@
           (else
            (kernel (cdr list) (cons (car list) response))))))
 
+;; Regex functions
 (define (matches->lists matches)
   (map (lambda (item)
          (purge-false (cdr (regexp-match->list item))))
