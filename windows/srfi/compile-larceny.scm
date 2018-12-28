@@ -1,27 +1,27 @@
 (import (scheme base)
         (scheme read)
-				(scheme write)
+        (scheme write)
         (scheme file)
         (srfi 14)
-				(srfi 98)
+        (srfi 98)
         (srfi 115)
         (windows srfi 138))
 
 (define (read-commands file)
-	(if (file-exists? file)
-			(begin
-				(display "Found config file: ")
-				(display file)
-				(newline)
-				(call-with-input-file
-						file
-					(lambda (p)
-						(let kernel ((contents '())
-												 (line (read-line p)))
-							(if (eof-object? line)
-									(reverse contents)
-									(kernel (cons line contents) (read-line p)))))))
-			(error "read-commands: config file not found")))
+  (if (file-exists? file)
+      (begin
+        (display "Found config file: ")
+        (display file)
+        (newline)
+        (call-with-input-file
+            file
+          (lambda (p)
+            (let kernel ((contents '())
+                         (line (read-line p)))
+              (if (eof-object? line)
+                  (reverse contents)
+                  (kernel (cons line contents) (read-line p)))))))
+      (error "read-commands: config file not found")))
 
 (define (parse-file-contents file-contents)
   ; Build the charsets we'll use to parse the file
@@ -37,8 +37,8 @@
            (libs `(: ,path (* (: #\; ,path))))
            (before-libs-regex (regexp `(: "-I" #\space ,libs)))
            (after-libs-regex (regexp `(: "-A" #\space ,libs))))
-			(display "Built regexes")
-			(newline)
+      (display "Built regexes")
+      (newline)
       ; Look through the file contents for each regex (should I use map here?)
       (let ((input-file
              (find-in-list file-contents input-regex))
@@ -48,8 +48,8 @@
              (find-in-list file-contents before-libs-regex))
             (after-libs
              (find-in-list file-contents after-libs-regex)))
-				(display "Parsed file -- starting compilation")
-				(newline)
+        (display "Parsed file -- starting compilation")
+        (newline)
         ; Basic error handling
         (cond ((null? input-file)
                (error "parse-file-contents: please specify a file to compile"))
@@ -62,25 +62,25 @@
 
 ;; Start compilation
 (define (compile input-file output-file before-libs after-libs)
-	(let ((input-file (caar (matches->lists input-file)))
+  (let ((input-file (caar (matches->lists input-file)))
         (output-file (if (not (null? output-file))
                          (caar (matches->lists output-file))
                          #f))
         (before-libs (if (not (null? before-libs))
                          (add-quotes (flatten (matches->lists before-libs)))
-												 '()))
+                         '()))
         (after-libs (if (not (null? after-libs))
                         (add-quotes (flatten (matches->lists after-libs)))
-												'())))
-		(display "Calling compile-r7rs ")
-		(display input-file)
-		(display " ")
-		(display output-file)
-		(display " ")
-		(display before-libs)
-		(display " ")
-		(display after-libs)
-		(newline)
+                        '())))
+    (display "Calling compile-r7rs ")
+    (display input-file)
+    (display " ")
+    (display output-file)
+    (display " ")
+    (display before-libs)
+    (display " ")
+    (display after-libs)
+    (newline)
     (compile-r7rs input-file output-file before-libs after-libs)))
 
 ;; List Helper Functions

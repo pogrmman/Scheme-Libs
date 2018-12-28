@@ -11,18 +11,18 @@ shift
 set param=%~1
 set arg=%~2
 if not "%param%" == "" (
-	 if not "%arg%" == "" (
-	 		@echo %param% %arg%>> %config%
-			@echo Found argument: %param% %arg%
-			shift
-			goto loop
-	) else (
-		@echo Finished writing file %config%
-		goto compile
-	)
+   if not "%arg%" == "" (
+      @echo %param% %arg%>> %config%
+      @echo Found argument: %param% %arg%
+      shift
+      goto loop
+  ) else (
+    @echo Finished writing file %config%
+    goto compile
+  )
 ) else (
-	@echo Finished writing file %config%
-	goto compile
+  @echo Finished writing file %config%
+  goto compile
 )
 
 :compile
