@@ -3,22 +3,25 @@
 				(scheme write)
         (scheme file)
         (srfi 14)
+				(srfi 98)
         (srfi 115)
         (windows srfi 138))
 
 (define (read-commands file)
-	(begin
-		(display "Found config file: ")
-		(display file)
-		(newline)
-		(call-with-input-file
-				file
-			(lambda (p)
-				(let kernel ((contents '())
-										 (line (read-line p)))
-					(if (eof-object? line)
-							(reverse contents)
-							(kernel (cons line contents) (read-line p))))))))
+	(if (file-exists? file)
+			(begin
+				(display "Found config file: ")
+				(display file)
+				(newline)
+				(call-with-input-file
+						file
+					(lambda (p)
+						(let kernel ((contents '())
+												 (line (read-line p)))
+							(if (eof-object? line)
+									(reverse contents)
+									(kernel (cons line contents) (read-line p)))))))
+			(error "read-commands: config file not found")))
 
 (define (parse-file-contents file-contents)
   ; Build the charsets we'll use to parse the file
@@ -59,7 +62,7 @@
 
 ;; Start compilation
 (define (compile input-file output-file before-libs after-libs)
-  (let ((input-file (caar (matches->lists input-file)))
+	(let ((input-file (caar (matches->lists input-file)))
         (output-file (if (not (null? output-file))
                          (caar (matches->lists output-file))
                          #f))
@@ -123,4 +126,4 @@
          (result (map matching list)))
     (purge-false result)))
 
-(parse-file-contents (read-commands "compile.config"))
+(parse-file-contents (read-commands (get-environment-variable "config")))
