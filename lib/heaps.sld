@@ -1,4 +1,4 @@
-(define-library (personal heaps)
+(define-library (lib heaps)
   (import (scheme base))
   (export root left right make-heap no-left? no-right? merge biggest remove-top list->heap heapsort)
   (begin
@@ -23,22 +23,22 @@
             ((not (heap? heap-b))
              heap-a)
             (else
-      (let ((bigger (if (> (root heap-a) (root heap-b))
-                        heap-a
-                        heap-b))
-            (smaller (if (> (root heap-a) (root heap-b))
-                         heap-b
-                         heap-a)))
-        (cond ((and (no-left? bigger) (no-left? smaller))
-               (make-heap (root bigger) smaller '()))
-              ((no-right? bigger)
-               (make-heap (root bigger)
-                          smaller
-                          (left bigger)))
-              (else
-               (make-heap (root bigger)
-                          (merge smaller (right bigger))
-                          (left bigger))))))))
+	     (let ((bigger (if (> (root heap-a) (root heap-b))
+			       heap-a
+			       heap-b))
+		   (smaller (if (> (root heap-a) (root heap-b))
+				heap-b
+				heap-a)))
+	       (cond ((and (no-left? bigger) (no-left? smaller))
+		      (make-heap (root bigger) smaller '()))
+		     ((no-right? bigger)
+		      (make-heap (root bigger)
+				 smaller
+				 (left bigger)))
+		     (else
+		      (make-heap (root bigger)
+				 (merge smaller (right bigger))
+				 (left bigger))))))))
     (define (biggest heap)
       (car heap))
     (define (remove-top heap)
