@@ -1,2 +1,2 @@
-# Personal libs
-This is a collection of small personal scheme libraries
+# Libs
+This is a collection of small personal scheme libraries that perform various things. Some are only used under certain Scheme implementations (like `(lib args)`), but others are general (like `(lib heaps)`).
