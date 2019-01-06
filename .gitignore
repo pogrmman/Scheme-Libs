@@ -7,3 +7,5 @@
 *.c
 *.o
 *.meta
+# Ignore raspberry pi
+raspberry-pi/
